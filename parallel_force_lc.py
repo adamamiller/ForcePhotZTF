@@ -83,7 +83,7 @@ def pool_sys_process(df, i):
     sampler = emcee.EnsembleSampler(nwalkers, ndim, systematic_lnprob, 
                                     args=(x, y, yerr))
 
-    max_samples = 50000
+    max_samples = 30000
 
     index = 0
     autocorr = np.empty(max_samples)
@@ -150,7 +150,7 @@ def pool_mix_process(df, i):
     mix_sampler = emcee.EnsembleSampler(nwalkers, ndim, mixture_lnprob, 
                                 args=(x, y, yerr))
 
-    max_samples = 50000
+    max_samples = 30000
 
     autocorr = np.empty(max_samples)
     old_tau = np.inf
