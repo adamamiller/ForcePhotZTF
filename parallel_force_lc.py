@@ -89,6 +89,7 @@ def pool_sys_process(df, i):
     index = 0
     autocorr = np.empty(max_samples)
     old_tau = np.inf
+    sys_tstart = time.time()
     for sample in sampler.sample(pos, iterations=max_samples):
         if ((sampler.iteration % 250) and 
             (sampler.iteration < 5000)):
@@ -109,7 +110,8 @@ def pool_sys_process(df, i):
         if converged:
             break
         old_tau = tau  
-    
+    sys_tend = time.time()
+    print('Epcoh {} took {:.2f} s'.format(i, sys_tend - sys_tstart))
     samples = sampler.get_chain(discard=int(10*tau[0]), flat=True)
     
     Fmcmc_low, Fmcmc_med, Fmcmc_high = np.percentile(samples[:,0], 
