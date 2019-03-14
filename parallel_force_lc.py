@@ -229,6 +229,7 @@ def get_force_photometry(ztf_name,
     else:
         pool = Pool()
         tstart = time.time()
+        print('tstart = {:.4f}'.format(tstart))
         results = [pool.apply_async(pool_sys_process, args=(xy_df, i,)) 
                    for i in xy_df['index'].unique()]
         output = [p.get() for p in results]
@@ -268,8 +269,10 @@ def get_force_photometry(ztf_name,
 
 if __name__== "__main__":
     ztf_name = str(sys.argv[1])
+    print('Got the ZTF name: {}'.format(ztf_name))
     if 2 < len(sys.argv) < 4:
         get_force_photometry(ztf_name, mixture=True)
     else:
+        print('... running systematic term ...'.format(ztf_name))
         get_force_photometry(ztf_name)
         
