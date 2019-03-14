@@ -84,35 +84,34 @@ def pool_sys_process(df, i):
     sampler = emcee.EnsembleSampler(nwalkers, ndim, systematic_lnprob, 
                                     args=(x, y, yerr))
 
-    max_samples = 30000
+    max_samples = 25000
 
-    index = 0
-    autocorr = np.empty(max_samples)
-    old_tau = np.inf
-    sys_tstart = time.time()
-    for sample in sampler.sample(pos, iterations=max_samples):
-        if ((sampler.iteration % 250) and 
-            (sampler.iteration < 5000)):
-            continue
-        elif ((sampler.iteration % 1000) and 
-              (5000 <= sampler.iteration < 15000)):
-            continue
-        elif ((sampler.iteration % 2500) and 
-              (15000 <= sampler.iteration)):
-            continue
-        tau = sampler.get_autocorr_time(tol=0)
-        autocorr[sampler.iteration-1] = np.mean(tau)
-        index += 1
-
-        # Check convergence
-        converged = np.all(tau * 100 < sampler.iteration)
-        converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
-        if converged:
-            break
-        old_tau = tau  
-    sys_tend = time.time()
-    print('Epcoh {} took {:.2f} s'.format(i, sys_tend - sys_tstart))
-    samples = sampler.get_chain(discard=int(10*tau[0]), flat=True)
+    # autocorr = np.empty(max_samples)
+    # old_tau = np.inf
+    # sys_tstart = time.time()
+    # for sample in sampler.sample(pos, iterations=max_samples):
+    #     if ((sampler.iteration % 250) and
+    #         (sampler.iteration < 5000)):
+    #         continue
+    #     elif ((sampler.iteration % 1000) and
+    #           (5000 <= sampler.iteration < 15000)):
+    #         continue
+    #     elif ((sampler.iteration % 2500) and
+    #           (15000 <= sampler.iteration)):
+    #         continue
+    #     tau = sampler.get_autocorr_time(tol=0)
+    #     autocorr[sampler.iteration-1] = np.mean(tau)
+    #
+    #     # Check convergence
+    #     converged = np.all(tau * 100 < sampler.iteration)
+    #     converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
+    #     if converged:
+    #         break
+    #     old_tau = tau
+    # sys_tend = time.time()
+    # print('Epcoh {} took {:.2f} s'.format(i, sys_tend - sys_tstart))
+    # samples = sampler.get_chain(discard=int(10*tau[0]), flat=True)
+    samples = sampler.get_chain(discard=5000, flat=True)
     
     Fmcmc_low, Fmcmc_med, Fmcmc_high = np.percentile(samples[:,0], 
                                                      (15.87, 50, 84.13))
@@ -153,31 +152,32 @@ def pool_mix_process(df, i):
     mix_sampler = emcee.EnsembleSampler(nwalkers, ndim, mixture_lnprob, 
                                 args=(x, y, yerr))
 
-    max_samples = 30000
+    max_samples = 25000
 
-    autocorr = np.empty(max_samples)
-    old_tau = np.inf
-    for sample in mix_sampler.sample(pos, iterations=max_samples):
-        if ((mix_sampler.iteration % 250) and 
-            (mix_sampler.iteration < 5000)):
-            continue
-        elif ((mix_sampler.iteration % 1000) and 
-              (5000 <= mix_sampler.iteration < 15000)):
-            continue
-        elif ((mix_sampler.iteration % 2500) and 
-              (15000 <= mix_sampler.iteration)):
-            continue
-        mix_tau = mix_sampler.get_autocorr_time(tol=0)
-        autocorr[mix_sampler.iteration-1] = np.mean(mix_tau)
-
-        # Check convergence
-        converged = np.all(mix_tau * 100 < mix_sampler.iteration)
-        converged &= np.all(np.abs(old_tau - mix_tau) / mix_tau < 0.01)
-        if converged:
-            break
-        old_tau = mix_tau
-    
-    mix_samples = mix_sampler.get_chain(discard=int(5*tau[0]), flat=True)
+    # autocorr = np.empty(max_samples)
+    # old_tau = np.inf
+    # for sample in mix_sampler.sample(pos, iterations=max_samples):
+    #     if ((mix_sampler.iteration % 250) and
+    #         (mix_sampler.iteration < 5000)):
+    #         continue
+    #     elif ((mix_sampler.iteration % 1000) and
+    #           (5000 <= mix_sampler.iteration < 15000)):
+    #         continue
+    #     elif ((mix_sampler.iteration % 2500) and
+    #           (15000 <= mix_sampler.iteration)):
+    #         continue
+    #     mix_tau = mix_sampler.get_autocorr_time(tol=0)
+    #     autocorr[mix_sampler.iteration-1] = np.mean(mix_tau)
+    #
+    #     # Check convergence
+    #     converged = np.all(mix_tau * 100 < mix_sampler.iteration)
+    #     converged &= np.all(np.abs(old_tau - mix_tau) / mix_tau < 0.01)
+    #     if converged:
+    #         break
+    #     old_tau = mix_tau
+    #
+    # mix_samples = mix_sampler.get_chain(discard=int(5*tau[0]), flat=True)
+    mix_samples = mix_sampler.get_chain(discard=5000, flat=True)
     
     Fmcmc_low, Fmcmc_med, Fmcmc_high = np.percentile(mix_samples[:,0], 
                                                      (15.87, 50, 84.13))
