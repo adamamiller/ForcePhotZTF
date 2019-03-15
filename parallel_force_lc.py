@@ -62,8 +62,14 @@ def systematic_lnprob(theta, x, y, yerr):
         return -np.inf
     return lp + systematic_lnlike(theta, x, y, yerr)
 
+def small_print_func(i):
+    print("Running a single process")
+    print(i)
+    return
+
 def pool_sys_process(df, i):
     print(i)
+    small_print_func(i)
     subdf = df.iloc[np.where(df['index']==i)]
     x = subdf['x'].values
     y = subdf['y'].values
