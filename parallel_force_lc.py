@@ -256,11 +256,12 @@ def get_force_photometry(ztf_name,
     for res_idx in xy_df['index'].unique():
         diff_filename = xy_df['path'].iloc[np.where(xy_df['index'] == res_idx)].unique()[0]
         info_idx = np.where(info_df['diffimgname'] == diff_filename)[0][0]
-        print(res_idx, info_idx)
-        Fmcmc[info_idx] = output_arr[res_idx, 1]                
-        Fmcmc_unc[info_idx] = output_arr[res_idx, 2]
-        amcmc[info_idx] = output_arr[res_idx, 3]
-        amcmc_unc[info_idx] = output_arr[res_idx, 4]
+        output_idx = np.where(output_arr[:,0].astype(int) == int(res_idx))[0]
+        print(res_idx, info_idx, output_idx)
+        Fmcmc[info_idx] = output_arr[output_idx, 1]                
+        Fmcmc_unc[info_idx] = output_arr[output_idx, 2]
+        amcmc[info_idx] = output_arr[output_idx, 3]
+        amcmc_unc[info_idx] = output_arr[output_idx, 4]
     
     # calculate flux
     f0 = 10**(info_df['zp'].values/2.5)
