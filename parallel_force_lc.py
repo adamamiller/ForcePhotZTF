@@ -62,14 +62,7 @@ def systematic_lnprob(theta, x, y, yerr):
         return -np.inf
     return lp + systematic_lnlike(theta, x, y, yerr)
 
-def small_print_func(i):
-    print("Running a single process")
-    print(i)
-    return
-
 def pool_sys_process(df, i):
-    print(i)
-    small_print_func(i)
     subdf = df.iloc[np.where(df['index']==i)]
     x = subdf['x'].values
     y = subdf['y'].values
@@ -237,7 +230,6 @@ def get_force_photometry(ztf_name,
     else:
         pool = Pool()
         tstart = time.time()
-        print('tstart = {:.4f}'.format(tstart))
         results = [pool.apply_async(pool_sys_process, args=(xy_df, i,)) 
                    for i in xy_df['index'].unique()]
         output = [p.get() for p in results]
@@ -246,7 +238,6 @@ def get_force_photometry(ztf_name,
         print("Pool map took {:.4f} sec".format(tend-tstart))
     
     output_arr = np.array(output)
-    print(output_arr)
 
     Fmcmc = np.zeros(len(xy_df['index'].unique()))
     Fmcmc_unc = np.zeros_like(Fmcmc)
@@ -257,7 +248,6 @@ def get_force_photometry(ztf_name,
         diff_filename = xy_df['path'].iloc[np.where(xy_df['index'] == res_idx)].unique()[0]
         info_idx = np.where(info_df['diffimgname'] == diff_filename)[0][0]
         output_idx = np.where(output_arr[:,0].astype(int) == int(res_idx))[0]
-        print(res_idx, info_idx, output_idx)
         Fmcmc[info_idx] = output_arr[output_idx, 1]                
         Fmcmc_unc[info_idx] = output_arr[output_idx, 2]
         amcmc[info_idx] = output_arr[output_idx, 3]
@@ -278,10 +268,8 @@ def get_force_photometry(ztf_name,
 
 if __name__== "__main__":
     ztf_name = str(sys.argv[1])
-    print('Got the ZTF name: {}'.format(ztf_name))
     if 2 < len(sys.argv) < 4:
         get_force_photometry(ztf_name, mixture=True)
     else:
-        print('... running systematic term ...'.format(ztf_name))
         get_force_photometry(ztf_name)
         
