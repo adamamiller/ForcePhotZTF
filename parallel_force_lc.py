@@ -246,21 +246,21 @@ def get_force_photometry(ztf_name,
         print("Pool map took {:.4f} sec".format(tend-tstart))
     
     output_arr = np.array(output)
-    
-    # test that ordering is identical
-    if np.all(info_df['diffimgname'] == xy_df['path'].unique()):
-        Fmcmc = np.zeros_like(info_df['zp'])
-        Fmcmc_unc = np.zeros_like(Fmcmc)
-        amcmc = np.zeros_like(Fmcmc)
-        amcmc_unc = np.zeros_like(Fmcmc)
-        for res_idx in output_arr[:,0].astype(int):
-            idx = np.where(xy_df['index'].unique() == res_idx)[0]
-            Fmcmc[idx] = output_arr[res_idx, 1]
-            Fmcmc_unc[idx] = output_arr[res_idx, 2]
-            amcmc[idx] = output_arr[res_idx, 3]
-            amcmc_unc[idx] = output_arr[res_idx, 4]
-    else:
-        raise ValueError("Input files do not have the same order")
+    print(output_arr)
+
+    Fmcmc = np.zeros(len(xy_df['index'].unique()))
+    Fmcmc_unc = np.zeros_like(Fmcmc)
+    amcmc = np.zeros_like(Fmcmc)
+    amcmc_unc = np.zeros_like(Fmcmc)
+
+    for res_idx in xy_df['index'].unique():
+        diff_filename = xy_df['path'].iloc[np.where(xy_df['index'] == res_idx)].unique()[0]
+        info_idx = np.where(info_df['diffimgname'] == diff_filename)[0][0]
+        print(res_idx, info_idx)
+        Fmcmc[info_idx] = output_arr[res_idx, 1]                
+        Fmcmc_unc[info_idx] = output_arr[res_idx, 2]
+        amcmc[info_idx] = output_arr[res_idx, 3]
+        amcmc_unc[info_idx] = output_arr[res_idx, 4]
     
     # calculate flux
     f0 = 10**(info_df['zp'].values/2.5)
