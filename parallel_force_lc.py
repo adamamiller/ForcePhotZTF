@@ -86,19 +86,19 @@ def pool_sys_process(df, i):
 
     max_samples = 25000
 
-    # autocorr = np.empty(max_samples)
-    # old_tau = np.inf
-    # sys_tstart = time.time()
-    # for sample in sampler.sample(pos, iterations=max_samples):
-    #     if ((sampler.iteration % 250) and
-    #         (sampler.iteration < 5000)):
-    #         continue
-    #     elif ((sampler.iteration % 1000) and
-    #           (5000 <= sampler.iteration < 15000)):
-    #         continue
-    #     elif ((sampler.iteration % 2500) and
-    #           (15000 <= sampler.iteration)):
-    #         continue
+    autocorr = np.empty(max_samples)
+    old_tau = np.inf
+    sys_tstart = time.time()
+    for sample in sampler.sample(pos, iterations=max_samples):
+        if ((sampler.iteration % 250) and
+            (sampler.iteration < 5000)):
+            continue
+        elif ((sampler.iteration % 1000) and
+              (5000 <= sampler.iteration < 15000)):
+            continue
+        elif ((sampler.iteration % 2500) and
+              (15000 <= sampler.iteration)):
+            continue
     #     tau = sampler.get_autocorr_time(tol=0)
     #     autocorr[sampler.iteration-1] = np.mean(tau)
     #
@@ -154,18 +154,18 @@ def pool_mix_process(df, i):
 
     max_samples = 25000
 
-    # autocorr = np.empty(max_samples)
-    # old_tau = np.inf
-    # for sample in mix_sampler.sample(pos, iterations=max_samples):
-    #     if ((mix_sampler.iteration % 250) and
-    #         (mix_sampler.iteration < 5000)):
-    #         continue
-    #     elif ((mix_sampler.iteration % 1000) and
-    #           (5000 <= mix_sampler.iteration < 15000)):
-    #         continue
-    #     elif ((mix_sampler.iteration % 2500) and
-    #           (15000 <= mix_sampler.iteration)):
-    #         continue
+    autocorr = np.empty(max_samples)
+    old_tau = np.inf
+    for sample in mix_sampler.sample(pos, iterations=max_samples):
+        if ((mix_sampler.iteration % 250) and
+            (mix_sampler.iteration < 5000)):
+            continue
+        elif ((mix_sampler.iteration % 1000) and
+              (5000 <= mix_sampler.iteration < 15000)):
+            continue
+        elif ((mix_sampler.iteration % 2500) and
+              (15000 <= mix_sampler.iteration)):
+            continue
     #     mix_tau = mix_sampler.get_autocorr_time(tol=0)
     #     autocorr[mix_sampler.iteration-1] = np.mean(mix_tau)
     #
